@@ -35,8 +35,10 @@ class KeyPair {
         if(keySize < 1024)
             throw new IllegalArgumentException("keySize must be at least 1024");
 
-        BigInteger p = generateRandomPrime(keySize/2);
-        BigInteger q = generateRandomPrime(keySize/2);
+        SecureRandom rnd = new SecureRandom();
+
+        BigInteger p = new BigInteger(keySize / 2, 100, rnd);
+        BigInteger q = new BigInteger(keySize / 2, 100, rnd);
 
         // phi = (p-1) * (q-1)
         BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
@@ -44,7 +46,7 @@ class KeyPair {
         // |p - q| <= primesDifference && gcd(e, phi) == 1
         while(p.subtract(q).abs().compareTo(primesDifference) <= 0 || !phi.gcd(e).equals(BigInteger.ONE)) {
 
-            q = generateRandomPrime(keySize / 2);
+            q = new BigInteger(keySize / 2, 100, rnd);
             phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
         }
 
@@ -58,19 +60,6 @@ class KeyPair {
         PrivateKey privateKey = new PrivateKey(n, d);
 
         return new KeyPair(publicKey, privateKey);
-    }
-
-    private static BigInteger generateRandomPrime(int primeSize){
-
-        BigInteger p = new BigInteger(primeSize, new SecureRandom())
-                .or(BigInteger.ONE)     // make the random number odd
-                .setBit(primeSize - 1); // ensure the number is of size primeSize (ie. actually a big number)
-
-        // probability of error is 2^(100)
-        if (!p.isProbablePrime(100))
-            p = p.nextProbablePrime();
-
-        return p;
     }
 
     public PublicKey getPublicKey() {
