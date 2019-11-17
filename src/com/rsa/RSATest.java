@@ -12,7 +12,7 @@ public class RSATest {
 
         System.out.println("Time to generate 2048-bit key pair: " + (t1 - t0) + "ms");
 
-        String plainText = "Hello, babe!";
+        String plainText = "Hello, World!";
         System.out.println("Plain text: " + plainText);
 
         t0 = System.currentTimeMillis();
@@ -26,7 +26,7 @@ public class RSATest {
         byte[] m = RSA.decrypt(kp.getPrivateKey(), c);
         t1 = System.currentTimeMillis();
 
-        System.out.println("Cipher text in hex: " + new String(m, StandardCharsets.UTF_8));
+        System.out.println("Plain text: " + new String(m, StandardCharsets.UTF_8));
         System.out.println("Time to decrypt is: " + (t1 - t0) + "ms");
     }
 }
