@@ -1,6 +1,13 @@
 package com.rsa;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class PublicKey {
     private BigInteger modulus;
@@ -17,6 +24,29 @@ public class PublicKey {
 
     public BigInteger getModulus() {
         return modulus;
+    }
+
+    /**
+     * Exports the key into a file and it will be in the current directory
+     * if there is a file with the same name it'll be overridden
+     * @param filename
+     */
+    public void save(String filename) throws IOException {
+        try(BufferedWriter bw = Files.newBufferedWriter(Paths.get(filename))) {
+            bw.write(this.modulus.toString(16));
+            bw.newLine();
+            bw.write(this.publicExponent.toString(16));
+        }
+    }
+
+    /**
+     * Imports the key from a file
+     * @param filename
+     */
+    public void load(String filename) throws IOException {
+        try(BufferedReader br = Files.newBufferedReader(Paths.get(filename))) {
+            this.modulus = new BigInteger(br.readLine(), 16);
+        }
     }
 
     @Override
