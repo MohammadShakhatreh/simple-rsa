@@ -28,7 +28,7 @@ class KeyPair {
      *
      * @return new Keypair instance with the generated key pair
      */
-    public static KeyPair generate(BigInteger e, int keySize){
+    public static KeyPair generate(BigInteger e, int keySize) {
 
         if(e.compareTo(BigInteger.ONE) <= 0)
             throw new IllegalArgumentException("Public exponent e must be greater than one");
@@ -48,7 +48,7 @@ class KeyPair {
             // (p * q) is the modulus
             n = p.multiply(q);
 
-            // |p - q| ^ 3 > n && gcd(e, phi) == 1
+            // |p - q| ^ 3 <= n || gcd(e, phi) != 1
         } while (p.subtract(q).abs().pow(3).compareTo(n) <= 0 || !phi.gcd(e).equals(BigInteger.ONE));
 
         // (e^(-1) % phi) is private exponent

@@ -43,10 +43,14 @@ public class PublicKey {
      * Imports the key from a file
      * @param filename
      */
-    public void load(String filename) throws IOException {
+    public static PublicKey load(String filename) throws IOException {
+        BigInteger modulus, publicExponent;
         try(BufferedReader br = Files.newBufferedReader(Paths.get(filename))) {
-            this.modulus = new BigInteger(br.readLine(), 16);
+            modulus = new BigInteger(br.readLine(), 16);
+            publicExponent = new BigInteger(br.readLine(), 16);
         }
+
+        return new PublicKey(modulus, publicExponent);
     }
 
     @Override
