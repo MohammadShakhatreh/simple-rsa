@@ -1,4 +1,4 @@
-package com.rsa;
+package rsa;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -7,21 +7,13 @@ import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class PrivateKey {
+public class PublicKey {
+    private BigInteger publicExponent;
     private BigInteger modulus;
-    private BigInteger privateExponent;
 
-    public PrivateKey(BigInteger modulus, BigInteger privateExponent) {
+    public PublicKey(BigInteger publicExponent, BigInteger modulus) {
+        this.publicExponent = publicExponent;
         this.modulus = modulus;
-        this.privateExponent = privateExponent;
-    }
-
-    public BigInteger getPrivateExponent() {
-        return privateExponent;
-    }
-
-    public BigInteger getModulus() {
-        return modulus;
     }
 
     /**
@@ -31,9 +23,9 @@ public class PrivateKey {
      */
     public void save(String filename) throws IOException {
         try(BufferedWriter bw = Files.newBufferedWriter(Paths.get(filename))) {
-            bw.write(this.modulus.toString(16));
+            bw.write(this.publicExponent.toString(16));
             bw.newLine();
-            bw.write(this.privateExponent.toString(16));
+            bw.write(this.modulus.toString(16));
         }
     }
 
@@ -41,16 +33,23 @@ public class PrivateKey {
      * Imports the key from a file
      * @param filename
      */
-    public static PrivateKey load(String filename) throws IOException {
-        BigInteger modulus, privateExponent;
+    public static PublicKey load(String filename) throws IOException {
+        BigInteger n, e;
         try(BufferedReader br = Files.newBufferedReader(Paths.get(filename))) {
-            modulus = new BigInteger(br.readLine(), 16);
-            privateExponent = new BigInteger(br.readLine(), 16);
+            e = new BigInteger(br.readLine(), 16);
+            n = new BigInteger(br.readLine(), 16);
         }
 
-        return new PrivateKey(modulus, privateExponent);
+        return new PublicKey(e, n);
     }
 
+    public BigInteger getPublicExponent() {
+        return publicExponent;
+    }
+
+    public BigInteger getModulus() {
+        return modulus;
+    }
 
     @Override
     public String toString() {
@@ -60,10 +59,10 @@ public class PrivateKey {
         String mod = modulus.toString();
         mod = mod.substring(0, Math.min(mod.length(), digits)) + (mod.length() > digits ? "..." : "");
 
-        String pe = privateExponent.toString();
+        String pe = publicExponent.toString();
         pe = pe.substring(0, Math.min(pe.length(), digits)) + (pe.length() > digits ? "..." : "");
 
         return  "\t\tModulus = " + mod + '\n' +
-                "\t\tPrivate exponent = " + pe + '\n';
+                "\t\tPublic exponent = " + pe + '\n';
     }
 }

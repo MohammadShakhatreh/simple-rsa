@@ -1,12 +1,12 @@
-package com.rsa;
+package rsa;
 
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.security.SecureRandom;
 
 class KeyPair {
-    private PublicKey publicKey;
-    private PrivateKey privateKey;
+    public final PublicKey publicKey;
+    public final PrivateKey privateKey;
 
     private KeyPair(PublicKey publicKey, PrivateKey privateKey) {
         this.publicKey = publicKey;
@@ -54,25 +54,17 @@ class KeyPair {
         // (e^(-1) % phi) is private exponent
         BigInteger d = e.modInverse(phi);
 
-        PublicKey publicKey = new PublicKey(n, e);
-        PrivateKey privateKey = new PrivateKey(n, d);
+        PublicKey publicKey = new PublicKey(e, n);
+        PrivateKey privateKey = new PrivateKey(d, n);
 
         return new KeyPair(publicKey, privateKey);
-    }
-
-    public PublicKey getPublicKey() {
-        return publicKey;
-    }
-
-    public PrivateKey getPrivateKey() {
-        return privateKey;
     }
 
     @Override
     public String toString() {
         return "Key pair:\n" +
-                "\tPublic key:\n" + publicKey + '\n' +
-                "\tPrivate key:\n" + privateKey;
+                "\tPublic key:\n" + this.publicKey + '\n' +
+                "\tPrivate key:\n" + this.privateKey;
     }
 }
 
