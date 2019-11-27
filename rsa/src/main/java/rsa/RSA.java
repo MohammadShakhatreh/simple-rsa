@@ -16,8 +16,6 @@ public class RSA {
      * @return the cipherText
      */
     public static byte[] encrypt(PublicKey publicKey, byte[] plainText) {
-
-        // Convert the plainText to a positive number
         BigInteger m = new BigInteger(1, plainText);
 
         BigInteger c = encrypt(publicKey, m);
@@ -31,8 +29,6 @@ public class RSA {
      * @return plainText
      */
     public static byte[] decrypt(PrivateKey privateKey, byte[] cipherText){
-        // Convert the cipherText to a number
-        // If it's a valid cipherText then it will be a positive number by default
         BigInteger c = new BigInteger(1, cipherText);
 
         BigInteger m = decrypt(privateKey, c);

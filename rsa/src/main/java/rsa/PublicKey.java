@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Base64;
 
 public class PublicKey {
     private BigInteger publicExponent;
@@ -23,9 +24,13 @@ public class PublicKey {
      */
     public void save(String filename) throws IOException {
         try(BufferedWriter bw = Files.newBufferedWriter(Paths.get(filename))) {
-            bw.write(this.publicExponent.toString(16));
+
+            String e = Base64.getEncoder().encodeToString(this.publicExponent.toByteArray());
+            String n = Base64.getEncoder().encodeToString(this.modulus.toByteArray());
+
+            bw.write(e);
             bw.newLine();
-            bw.write(this.modulus.toString(16));
+            bw.write(n);
         }
     }
 
@@ -36,8 +41,8 @@ public class PublicKey {
     public static PublicKey load(String filename) throws IOException {
         BigInteger n, e;
         try(BufferedReader br = Files.newBufferedReader(Paths.get(filename))) {
-            e = new BigInteger(br.readLine(), 16);
-            n = new BigInteger(br.readLine(), 16);
+            e = new BigInteger(Base64.getDecoder().decode(br.readLine()));
+            n = new BigInteger(Base64.getDecoder().decode(br.readLine()));
         }
 
         return new PublicKey(e, n);

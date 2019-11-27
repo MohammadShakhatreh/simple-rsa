@@ -1,12 +1,24 @@
-to compile
+# Requirements 
+- Java 8+
+- Gradle 6+
+
+# Build
 
 ```
-$ javac -d . --source-path src src/com/rsa/*
-$ jar -cv -m META-INF/MANIFEST.MF -f rsa.jar com/rsa/*
+RSA_Project $ ./gradlew build
 ```
 
-to run 
+# Run 
+
+Run with gradle 
 
 ```
-$ java -jar rsa.jar
+# for rsa generation CLI
+RSA_Project $ ./gradlew :rsa:run --args=""
+# for client and server
+RSA_Project $ ./gradlew :client:run --args=""
+RSA_Project $ ./gradlew :server:run --args=""
 ```
+
+Or go to build\distributions folder for each subproject there will be each 
+subproject compiled and ready
