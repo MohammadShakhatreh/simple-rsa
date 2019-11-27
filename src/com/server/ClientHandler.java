@@ -1,4 +1,4 @@
-package com.rsa;
+package com.server;
 
 import java.io.*;
 import java.net.Socket;
@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 public class ClientHandler implements Runnable {
 
     private Socket s;
+    private String name;
 
     public ClientHandler(Socket s) {
         this.s = s;

@@ -1,4 +1,4 @@
-package com.rsa;
+package com.client;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -27,7 +27,7 @@ public class Client {
             BufferedReader serverReader = new BufferedReader(new InputStreamReader(s.getInputStream(), StandardCharsets.UTF_8));
             BufferedWriter serverWriter = new BufferedWriter(new OutputStreamWriter(s.getOutputStream(), StandardCharsets.UTF_8));
 
-            String line = "";
+            String line;
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             while(true) {
                 line = br.readLine();
