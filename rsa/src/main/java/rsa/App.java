@@ -13,7 +13,7 @@ import java.io.IOException;
  * - filename.pub for public key file
  *
  */
-public class App {
+class App {
 
     public static void main(String[] args) throws IOException {
         if(args.length < 1) {

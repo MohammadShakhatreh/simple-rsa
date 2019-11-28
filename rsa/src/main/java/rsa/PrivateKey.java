@@ -58,16 +58,6 @@ public class PrivateKey {
 
     @Override
     public String toString() {
-
-        int digits = 20;
-
-        String mod = modulus.toString(16);
-        mod = mod.substring(0, Math.min(mod.length(), digits)) + (mod.length() > digits ? "..." : "");
-
-        String pe = privateExponent.toString(16);
-        pe = pe.substring(0, Math.min(pe.length(), digits)) + (pe.length() > digits ? "..." : "");
-
-        return  "\t\tModulus = " + mod + '\n' +
-                "\t\tPrivate exponent = " + pe + '\n';
+        return this.privateExponent + " " + this.modulus;
     }
 }

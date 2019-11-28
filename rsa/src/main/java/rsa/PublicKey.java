@@ -58,16 +58,6 @@ public class PublicKey {
 
     @Override
     public String toString() {
-
-        int digits = 20;
-
-        String mod = modulus.toString();
-        mod = mod.substring(0, Math.min(mod.length(), digits)) + (mod.length() > digits ? "..." : "");
-
-        String pe = publicExponent.toString();
-        pe = pe.substring(0, Math.min(pe.length(), digits)) + (pe.length() > digits ? "..." : "");
-
-        return  "\t\tModulus = " + mod + '\n' +
-                "\t\tPublic exponent = " + pe + '\n';
+        return this.publicExponent + " " + this.modulus;
     }
 }

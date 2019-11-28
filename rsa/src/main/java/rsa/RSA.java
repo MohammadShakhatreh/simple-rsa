@@ -43,7 +43,7 @@ public class RSA {
      */
     public static BigInteger encrypt(PublicKey publicKey, BigInteger m){
         // make sure 0 <= m < n holds
-        if(m.signum() <= 0 || m.compareTo(publicKey.getModulus()) >= 0)
+        if(m.signum() == -1 || m.compareTo(publicKey.getModulus()) >= 0)
             throw new IllegalArgumentException("Argument m must be in the interval [0, n)");
 
         // (m^e) % n = c
@@ -60,7 +60,7 @@ public class RSA {
      */
     public static BigInteger decrypt(PrivateKey privateKey, BigInteger c){
         // make sure 0 <= c < n holds
-        if(c.signum() <= 0 || c.compareTo(privateKey.getModulus()) >= 0)
+        if(c.signum() == -1 || c.compareTo(privateKey.getModulus()) >= 0)
             throw new IllegalArgumentException("Argument c must be in the interval [0, n)");
 
         // (c^d) % n = m

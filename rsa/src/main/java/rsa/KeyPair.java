@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.nio.file.Path;
 import java.security.SecureRandom;
 
-class KeyPair {
+public class KeyPair {
     public final PublicKey publicKey;
     public final PrivateKey privateKey;
 
@@ -49,7 +49,7 @@ class KeyPair {
             n = p.multiply(q);
 
             // |p - q| ^ 3 <= n || gcd(e, phi) != 1
-        } while (p.subtract(q).abs().pow(3).compareTo(n) <= 0 || !phi.gcd(e).equals(BigInteger.ONE));
+        } while (p.subtract(q).abs().pow(3).compareTo(n) <= 0 || !phi.gcd(e).equals(BigInteger.ONE) || phi.compareTo(e) <= 0);
 
         // (e^(-1) % phi) is private exponent
         BigInteger d = e.modInverse(phi);

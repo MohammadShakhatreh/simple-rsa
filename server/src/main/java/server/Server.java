@@ -1,5 +1,8 @@
 package server;
 
+import rsa.KeyPair;
+import rsa.PublicKey;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -26,6 +29,8 @@ import java.util.Vector;
  */
 public class Server {
 
+    public static KeyPair keyPair;
+
     // Array of connected clients
     public static Vector<ClientHandler> clients = new Vector<>();
 
@@ -40,6 +45,8 @@ public class Server {
         }
 
         int port = Integer.parseInt(args[0]);
+
+        keyPair = KeyPair.generate();
 
         try(ServerSocket soc = new ServerSocket(port)) {
 
