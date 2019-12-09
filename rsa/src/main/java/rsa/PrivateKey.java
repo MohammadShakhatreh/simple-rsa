@@ -23,7 +23,7 @@ public class PrivateKey {
      * @param filename
      */
     public void save(String filename) throws IOException {
-        try(BufferedWriter bw = Files.newBufferedWriter(Paths.get(filename))) {
+        try(BufferedWriter bw = Files.newBufferedWriter(Paths.get(filename + ".pri"))) {
             String d = Base64.getEncoder().encodeToString(this.privateExponent.toByteArray());
             String n = Base64.getEncoder().encodeToString(this.modulus.toByteArray());
 
@@ -39,7 +39,7 @@ public class PrivateKey {
      */
     public static PrivateKey load(String filename) throws IOException {
         BigInteger d, n;
-        try(BufferedReader br = Files.newBufferedReader(Paths.get(filename))) {
+        try(BufferedReader br = Files.newBufferedReader(Paths.get(filename + ".pri"))) {
 
             d = new BigInteger(Base64.getDecoder().decode(br.readLine()));
             n = new BigInteger(Base64.getDecoder().decode(br.readLine()));

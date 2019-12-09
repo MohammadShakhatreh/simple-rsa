@@ -4,83 +4,90 @@ import rsa.PublicKey;
 import rsa.RSA;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 
 public class ClientHandler implements Runnable {
 
-    private Socket s;
-    private String name;
+    private Socket socket;
+    private String username;
+    private PublicKey publicKey;
 
+    public ClientHandler(Socket socket) {
+        this.socket = socket;
+    }
 
-    public ClientHandler(Socket s) {
-        this.s = s;
+    private String authenticate(BufferedReader clientReader, BufferedWriter clientWriter) throws IOException {
+        SecureRandom rand = new SecureRandom();
+
+        // Read client username and load it's public key
+        this.username = clientReader.readLine();
+        this.publicKey = PublicKey.load(username);
+
+        // Server sends a nonce encrypted
+        String nonce = Long.toString(rand.nextLong());
+        clientWriter.write(RSA.encrypt(publicKey, nonce) + "\r\n");
+        clientWriter.flush();
+
+        // Client sends the nonce
+        String returnedNonce = clientReader.readLine();
+
+        String response = "200 OK";
+
+        // See if the nonce from client equals the server nonce
+        if(!nonce.equals(returnedNonce)){
+            response = "401 Unauthorized";
+        }
+
+        clientWriter.write(response + "\r\n");
+        clientWriter.flush();
+
+        return response;
     }
 
     @Override
     public void run() {
 
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream(), StandardCharsets.UTF_8));
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(s.getOutputStream(), StandardCharsets.UTF_8));
+            BufferedReader clientReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+            BufferedWriter clientWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
 
-            //Keys Exchange
-            String pk = br.readLine();
+            String response = authenticate(clientReader, clientWriter);
 
-            String[] tmp = pk.split(" ");
-            PublicKey clientPub = new PublicKey(
-                    new BigInteger(tmp[0]),
-                    new BigInteger(tmp[1])
-            );
+            // if client is not authenticated exit
+            if(!response.equals("200 OK"))
+                return;
 
-            bw.write(Server.keyPair.publicKey + "\r\n");
-            bw.flush();
+            String request;
+            while((request = clientReader.readLine()) != null) {
+                String[] message = request.split(" ");
 
-            //User Auth
-            SecureRandom rand = new SecureRandom();
+                request = RSA.decrypt(Server.privateKey, message[0]);
+                String requestHash = RSA.unSign(publicKey, message[1]);
 
-            long r = rand.nextLong();
-            bw.write(r + "\r\n");
-            bw.flush();
+                MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                byte[] d = digest.digest(request.getBytes(StandardCharsets.UTF_8));
 
-            String token = br.readLine();
-            byte[] c = Base64.getDecoder().decode(token.getBytes(StandardCharsets.UTF_8));
-            byte[] m = RSA.decrypt(Server.keyPair.privateKey, c);
-
-            tmp = new String(m, StandardCharsets.UTF_8).split(" ");
-
-            if(Long.parseLong(tmp[1]) != r){
-                bw.write("Auth failed!\r\n");
-                bw.flush();
-                System.exit(-1);
-            } else {
-                bw.write("Auth succeeded");
-                bw.flush();
+                System.out.println(username + ": " + request);
+                if(!requestHash.equals(Base64.getEncoder().encodeToString(d))){
+                    System.err.println("Message verification failed!");
+                }
             }
 
-            this.name = tmp[0];
-
-            String line;
-            while((line = br.readLine()) != null) {
-                byte[] c = Base64.getDecoder().decode(line);
-
-                long t0 = System.currentTimeMillis();
-                byte[] m = RSA.decrypt(Server.keyPair.privateKey, c);
-                long t1 = System.currentTimeMillis();
-
-                System.out.println("Time to decrypt: " + (t1 - t0) + "ms");
-                System.out.println(new String(m, StandardCharsets.UTF_8));
-            }
-
-        } catch (IOException e) {
+        } catch (IOException | NoSuchAlgorithmException e) {
             System.err.println(e.getMessage());
         } finally {
+            // Remove myself from client vector
+            Server.clients.remove(this);
+
+            // Close the connection
             try {
-                s.close();
-            } catch (IOException e){}
+                socket.close();
+            } catch (IOException ignored){}
         }
     }
 }

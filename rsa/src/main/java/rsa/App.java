@@ -29,8 +29,8 @@ class App {
         KeyPair keyPair = KeyPair.generate();
         t1 = System.currentTimeMillis();
 
-        keyPair.publicKey.save(args[0] + ".pub");
-        keyPair.privateKey.save(args[0] + ".pri");
+        keyPair.getPublic().save(args[0]);
+        keyPair.getPrivate().save(args[0]);
 
         System.out.println("Keys are generated successfully");
         System.out.println("Time to generate keys is: " + (t1 - t0) + "ms");

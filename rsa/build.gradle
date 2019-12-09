@@ -17,3 +17,9 @@ application {
     // Define the main class for the application.
     mainClassName = 'rsa.App'
 }
+
+test {
+    useJUnit()
+
+    maxHeapSize = '1G'
+}

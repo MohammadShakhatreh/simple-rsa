@@ -2,6 +2,7 @@ package rsa;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class RSA {
 
@@ -12,28 +13,54 @@ public class RSA {
 
     /**
      *
-     * @param plainText
-     * @return the cipherText
+     * @param plainText a UTF-8 plain text
+     * @return cipherText base64 encoded
      */
-    public static byte[] encrypt(PublicKey publicKey, byte[] plainText) {
-        BigInteger m = new BigInteger(1, plainText);
+    public static String encrypt(PublicKey publicKey, String plainText) {
+        BigInteger m = new BigInteger(1, plainText.getBytes(StandardCharsets.UTF_8));
 
         BigInteger c = encrypt(publicKey, m);
 
-        return toByteArray(c);
+        return Base64.getEncoder().encodeToString(toByteArray(c));
     }
 
     /**
      *
-     * @param cipherText
-     * @return plainText
+     * @param cipherText base64 encoded
+     * @return plainText a UTF-8 plain text
      */
-    public static byte[] decrypt(PrivateKey privateKey, byte[] cipherText){
-        BigInteger c = new BigInteger(1, cipherText);
+    public static String decrypt(PrivateKey privateKey, String cipherText) {
+        BigInteger c = new BigInteger(1, Base64.getDecoder().decode(cipherText));
 
         BigInteger m = decrypt(privateKey, c);
 
-        return toByteArray(m);
+        return new String(toByteArray(m), StandardCharsets.UTF_8);
+    }
+
+    /**
+     *
+     * @param plainText a UTF-8 plain text
+     * @return cipherText base64 encoded
+     */
+    public static String sign(PrivateKey privateKey, String plainText) {
+        BigInteger m = new BigInteger(1, plainText.getBytes(StandardCharsets.UTF_8));
+
+        BigInteger c = decrypt(privateKey, m);
+
+        return Base64.getEncoder().encodeToString(toByteArray(c));
+    }
+
+    /**
+     *
+     * @param cipherText base64 encoded
+     * @return plainText a UTF-8 plain text
+     */
+    public static String unSign(PublicKey publicKey, String cipherText) {
+        BigInteger m = new BigInteger(1, Base64.getDecoder().decode(cipherText));
+
+        BigInteger c = encrypt(publicKey, m);
+
+        return new String(toByteArray(c), StandardCharsets.UTF_8);
     }
 
     /**
@@ -99,17 +126,17 @@ public class RSA {
         System.out.println("Plain text: " + plainText);
 
         t0 = System.currentTimeMillis();
-        byte[] c = RSA.encrypt(kp.publicKey, plainText.getBytes(StandardCharsets.UTF_8));
+        String c = RSA.encrypt(kp.getPublic(), plainText);
         t1 = System.currentTimeMillis();
 
         System.out.println("Cipher text in hex: " + new BigInteger(c).toString(16));
         System.out.println("Time to encrypt is: " + (t1 - t0) + "ms");
 
         t0 = System.currentTimeMillis();
-        byte[] m = RSA.decrypt(kp.privateKey, c);
+        String m = RSA.decrypt(kp.getPrivate(), c);
         t1 = System.currentTimeMillis();
 
-        System.out.println("Plain text: " + new String(m, StandardCharsets.UTF_8));
+        System.out.println("Plain text: " + m);
         System.out.println("Time to decrypt is: " + (t1 - t0) + "ms");
     }
 }

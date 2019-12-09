@@ -23,7 +23,7 @@ public class PublicKey {
      * @param filename
      */
     public void save(String filename) throws IOException {
-        try(BufferedWriter bw = Files.newBufferedWriter(Paths.get(filename))) {
+        try(BufferedWriter bw = Files.newBufferedWriter(Paths.get(filename + ".pub"))) {
 
             String e = Base64.getEncoder().encodeToString(this.publicExponent.toByteArray());
             String n = Base64.getEncoder().encodeToString(this.modulus.toByteArray());
@@ -39,8 +39,8 @@ public class PublicKey {
      * @param filename
      */
     public static PublicKey load(String filename) throws IOException {
-        BigInteger n, e;
-        try(BufferedReader br = Files.newBufferedReader(Paths.get(filename))) {
+        BigInteger e, n;
+        try(BufferedReader br = Files.newBufferedReader(Paths.get(filename + ".pub"))) {
             e = new BigInteger(Base64.getDecoder().decode(br.readLine()));
             n = new BigInteger(Base64.getDecoder().decode(br.readLine()));
         }

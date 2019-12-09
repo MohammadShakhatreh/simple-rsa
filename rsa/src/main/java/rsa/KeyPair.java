@@ -1,12 +1,12 @@
 package rsa;
 
+
 import java.math.BigInteger;
-import java.nio.file.Path;
 import java.security.SecureRandom;
 
 public class KeyPair {
-    public final PublicKey publicKey;
-    public final PrivateKey privateKey;
+    private PublicKey publicKey;
+    private PrivateKey privateKey;
 
     private KeyPair(PublicKey publicKey, PrivateKey privateKey) {
         this.publicKey = publicKey;
@@ -60,11 +60,12 @@ public class KeyPair {
         return new KeyPair(publicKey, privateKey);
     }
 
-    @Override
-    public String toString() {
-        return "Key pair:\n" +
-                "\tPublic key:\n" + this.publicKey + '\n' +
-                "\tPrivate key:\n" + this.privateKey;
+    public PublicKey getPublic() {
+        return publicKey;
+    }
+
+    public PrivateKey getPrivate() {
+        return privateKey;
     }
 }
 
