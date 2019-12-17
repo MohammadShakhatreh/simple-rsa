@@ -57,7 +57,7 @@ public class ClientHandler implements Runnable {
             BufferedWriter clientWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
 
             String response = authenticate(clientReader, clientWriter);
-
+            System.out.println(username + ": " + response);
             // if client is not authenticated exit
             if(!response.equals("200 OK"))
                 return;
@@ -66,15 +66,21 @@ public class ClientHandler implements Runnable {
             while((request = clientReader.readLine()) != null) {
                 String[] message = request.split(" ");
 
+                long t0 = System.currentTimeMillis();
                 request = RSA.decrypt(Server.privateKey, message[0]);
+                long t1 = System.currentTimeMillis();
+                System.out.println("Time to decrypt: " + (t1 - t0) + "ms");
+
                 String requestHash = RSA.unSign(publicKey, message[1]);
 
                 MessageDigest digest = MessageDigest.getInstance("SHA-256");
-                byte[] d = digest.digest(request.getBytes(StandardCharsets.UTF_8));
+                byte[] hash = digest.digest(request.getBytes(StandardCharsets.UTF_8));
 
                 System.out.println(username + ": " + request);
-                if(!requestHash.equals(Base64.getEncoder().encodeToString(d))){
+                if(!requestHash.equals(Base64.getEncoder().encodeToString(hash))){
                     System.err.println("Message verification failed!");
+                } else {
+                    System.out.println("Verified");
                 }
             }
 

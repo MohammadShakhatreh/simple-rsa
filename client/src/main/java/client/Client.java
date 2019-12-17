@@ -60,7 +60,7 @@ public class Client {
     }
 
     /**
-     * Usage: ./client host port username [filename]
+     * Usage: ./client host port username
      */
     public static void main(String[] args) {
         if(args.length < 3) {
@@ -80,6 +80,8 @@ public class Client {
 
             // User authentication
             String res = authenticate(username, serverReader, serverWriter);
+            System.out.println(res);
+
             if (!res.equals("200 OK")) {
                 System.err.println(res);
                 return;
@@ -90,7 +92,11 @@ public class Client {
             String line;
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             while((line = br.readLine()) != null) {
+                long t0 = System.currentTimeMillis();
                 String encryptedMessage = RSA.encrypt(serverPublicKey, line);
+                long t1 = System.currentTimeMillis();
+
+                System.out.println("Time to encrypt: " + (t1 - t0) + "ms");
 
                 MessageDigest digest = MessageDigest.getInstance("SHA-256");
                 byte[] hash = digest.digest(line.getBytes(StandardCharsets.UTF_8));

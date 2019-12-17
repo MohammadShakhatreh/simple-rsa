@@ -18,6 +18,7 @@ class App {
     public static void main(String[] args) throws IOException {
         if(args.length < 1) {
             System.err.println("Usage: ./rsa filename");
+            System.err.println("The generated files will be filename.pub and filename.pri");
             return;
         }
 

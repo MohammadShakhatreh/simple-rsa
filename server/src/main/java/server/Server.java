@@ -9,25 +9,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
 
-/**
- * Our Application layer protocol is as follows:
- *
- * Headers:
- *
- * Content-Type: [file, reg, auth]
- * this is a required header
- * -- file: the data section will be a file and the server will resend it to all other active clients
- * -- reg: the data section is a regular message the server will print it
- * -- auth: the data section will be client username
- *
- * Content-Length: length
- * data section length in bytes
- *
- * Filename: filename
- * used with (file) header to indicate the file name
- *
- *
- */
 public class Server {
 
     public static PublicKey publicKey;

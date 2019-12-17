@@ -4,8 +4,8 @@
 
 # Build
 
-```
-RSA_Project $ ./gradlew build
+```bash
+$ ./gradlew build
 ```
 
 # Run 
@@ -14,10 +14,10 @@ Run with gradle
 
 ```
 # for rsa generation CLI
-RSA_Project $ ./gradlew :rsa:run --args=""
+$ ./gradlew :rsa:run --args="filename"
 # for client and server
-RSA_Project $ ./gradlew :client:run --args=""
-RSA_Project $ ./gradlew :server:run --args=""
+$ ./gradlew :client:run --args="host port username"
+$ ./gradlew :server:run --args="port"
 ```
 
 Or go to build\distributions folder for each subproject there will be each 
