@@ -4,21 +4,14 @@
 
 # Build
 
+To build all 3 sub projects (rsa, client, server)
 ```bash
 $ ./gradlew build
 ```
 
-# Run 
+# Demo
 
-Run with gradle 
-
+This will create a demo directory with the three projects in it
+```bash
+$ ./demo.sh
 ```
-# for rsa generation CLI
-$ ./gradlew :rsa:run --args="filename"
-# for client and server
-$ ./gradlew :client:run --args="host port username"
-$ ./gradlew :server:run --args="port"
-```
-
-Or go to build\distributions folder for each subproject there will be each 
-subproject compiled and ready
