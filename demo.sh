@@ -8,5 +8,5 @@ mkdir -p demo;
 
 # unzip the distributions to the demo
 for project in $projects; do
-  unzip "$project/build/distributions/$project-0.1.zip" -d demo;
+  unzip -o "$project/build/distributions/$project.zip" -d demo ;
 done
